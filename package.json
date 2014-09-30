@@ -1,0 +1,31 @@
+{
+  "name": "strong-wait-till-listening",
+  "version": "1.0.0",
+  "description": "Wait until a TCP server is listening on the given port",
+  "license": {
+    "name": "Dual MIT/StrongLoop",
+    "url": "https://github.com/strongloop/strong-wait-till-listening/blob/master/LICENSE"
+  },
+  "main": "index.js",
+  "scripts": {
+    "pretest": "./node_modules/.bin/jshint .",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strongloop/strong-wait-till-listening"
+  },
+  "author": {
+    "name": "Miroslav Bajtos",
+    "email": "miroslav@strongloop.com"
+  },
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "debug": "^2.0.0",
+    "jshint": "^2.5.6",
+    "mocha": "^1.21.4"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
