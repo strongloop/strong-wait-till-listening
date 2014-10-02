@@ -1,6 +1,6 @@
 {
   "name": "strong-wait-till-listening",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wait until a TCP server is listening on the given port",
   "license": {
     "name": "Dual MIT/StrongLoop",
