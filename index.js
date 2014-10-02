@@ -18,6 +18,7 @@ module.exports = function waitTillListening(options, callback) {
     'options.timeoutInMs must be a positive number');
 
   var finished = false;
+  var client;
 
   setTimeout(failWithTimeout, options.timeoutInMs);
   tryConnect();
@@ -26,7 +27,7 @@ module.exports = function waitTillListening(options, callback) {
     if (finished) return;
     debug('Trying to connect to %s:%s', options.host, options.port);
 
-    var client = net.connect({
+    client = net.connect({
       host: options.host,
       port: options.port
     });
@@ -56,6 +57,9 @@ module.exports = function waitTillListening(options, callback) {
   function failWithTimeout() {
     if (finished) return;
     finished = true;
+
+    // Destroy any pending connection. We no longer care about the result.
+    if (client) client.destroy();
 
     var msg = 'Timed out while waiting for a server listening on ' +
       options.host + ':' + options.port;
