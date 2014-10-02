@@ -15,15 +15,15 @@ $ npm install strong-wait-till-listening
 var waitTillListening = require('strong-wait-till-listening');
 
 waitTillListening(
-  // host or IP address
-  'localhost',  
-  // port
-  3000,
-  // timeout in ms
-  20000,
-  // callback
-  function(err) {}
+  {
+    // optional, defaults to 'localhost'
+    host: 'localhost',
+    port: 3000,
+    timeoutInMs: 20000,
+    // optional, defaults to 50
+    pollingIntervalInMs: 50
+  },
+  function waitCallback(err) {
+  }
 );
 ```
-
-
