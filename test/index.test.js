@@ -29,7 +29,8 @@ describe('waitForListening', function() {
       function(err) {
         var duration = new Date() - start;
 
-        expect(duration, 'duration').to.be.gte(50);
+        // Allow 1ms margin of error
+        expect(duration, 'duration').to.be.gte(50 - 1);
         expect(err, 'err').to.not.equal(undefined);
         done();
       }
