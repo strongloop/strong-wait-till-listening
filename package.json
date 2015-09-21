@@ -2,10 +2,7 @@
   "name": "strong-wait-till-listening",
   "version": "1.0.1",
   "description": "Wait until a TCP server is listening on the given port",
-  "license": {
-    "name": "Dual MIT/StrongLoop",
-    "url": "https://github.com/strongloop/strong-wait-till-listening/blob/master/LICENSE"
-  },
+  "license": "Artistic-2.0",
   "main": "index.js",
   "scripts": {
     "pretest": "./node_modules/.bin/jshint .",
