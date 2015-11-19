@@ -3,8 +3,7 @@ var debug = require('debug')('strong-wait-till-listening');
 var extend = require('util')._extend;
 var net = require('net');
 
-
-module.exports = function waitTillListening(options, callback) {
+module.exports = function waitTillListening(options, cb) {
   options = extend(
     {
       host: 'localhost',
@@ -20,7 +19,14 @@ module.exports = function waitTillListening(options, callback) {
   var finished = false;
   var client;
 
-  setTimeout(failWithTimeout, options.timeoutInMs);
+  var timeouts = [];
+  var callback = function() {
+    timeouts.forEach(clearTimeout);
+    timeouts = [];
+    cb.apply(this, arguments);
+  };
+  timeouts.push(setTimeout(failWithTimeout, options.timeoutInMs));
+
   tryConnect();
 
   function tryConnect() {
@@ -50,7 +56,7 @@ module.exports = function waitTillListening(options, callback) {
       debug('Connection failed, retrying in %sms. %s',
         options.pollingIntervalInMs, err);
 
-      setTimeout(tryConnect, options.pollingIntervalInMs);
+      timeouts.push(setTimeout(tryConnect, options.pollingIntervalInMs));
     });
   }
 
