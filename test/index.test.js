@@ -1,40 +1,79 @@
-/*global describe,it,beforeEach */
+/*global describe,it,beforeEach,afterEach */
 var net = require('net');
 var waitTillListening = require('../');
-var expect = require('chai').expect;
+
+var chai = require('chai');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+var expect = chai.expect;
+chai.use(sinonChai);
 
 describe('waitForListening', function() {
   var uniquePort = 62000;
 
   beforeEach(function makeUniquePort() {
     uniquePort++;
+    sinon.spy(global, 'clearTimeout');
   });
 
-  it('returns immediately when the server is listening', function(done) {
-    // Let's define immediately as in less than 100 ms
-    this.timeout(100);
-
-    givenServerListeningAt(uniquePort)
-      .on('listening', function() {
-        waitTillListening({ port: uniquePort, timeoutInMs: 50}, done);
-      });
+  afterEach(function() {
+    global.clearTimeout.restore();
   });
 
-  it('returns error when timeout expires', function(done) {
-    this.timeout(100);
+  describe('when the server is listening', function() {
+    beforeEach(function() {
+      // Let's define immediately as in less than 100 ms
+      this.timeout(100);
+    });
 
-    var start = new Date();
-    waitTillListening(
-      { port: uniquePort, timeoutInMs: 50},
-      function(err) {
-        var duration = new Date() - start;
+    it('returns immediately', function(done) {
+      givenServerListeningAt(uniquePort)
+        .on('listening', function() {
+          waitTillListening({ port: uniquePort, timeoutInMs: 50}, done);
+        });
+    });
 
-        // Allow 1ms margin of error
-        expect(duration, 'duration').to.be.gte(50 - 1);
-        expect(err, 'err').to.not.equal(undefined);
-        done();
-      }
-    );
+    it('clears the timeout', function(done) {
+      givenServerListeningAt(uniquePort)
+        .on('listening', function() {
+          waitTillListening({ port: uniquePort, timeoutInMs: 50}, function() {
+            expect(clearTimeout).to.have.been.calledOnce.calledWith();
+            done();
+          });
+        });
+    });
+  });
+
+  describe('when the timeout expires', function() {
+    var start;
+    beforeEach(function() {
+      this.timeout(100);
+      start = new Date();
+    });
+
+    it('returns an error', function(done) {
+      waitTillListening(
+        { port: uniquePort, timeoutInMs: 50},
+        function(err) {
+          var duration = new Date() - start;
+
+          // Allow 1ms margin of error
+          expect(duration, 'duration').to.be.gte(50 - 1);
+          expect(err, 'err').to.not.equal(undefined);
+          done();
+        }
+      );
+    });
+
+    it('clears the timeout', function(done) {
+      waitTillListening(
+        { port: uniquePort, timeoutInMs: 50},
+        function() {
+          expect(clearTimeout).to.have.been.calledTwice.calledWith();
+          done();
+        }
+      );
+    });
   });
 
   it('waits for the server to start', function(done) {
