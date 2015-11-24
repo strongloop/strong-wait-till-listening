@@ -1,6 +1,6 @@
 {
   "name": "strong-wait-till-listening",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Wait until a TCP server is listening on the given port",
   "license": "Artistic-2.0",
   "main": "index.js",
